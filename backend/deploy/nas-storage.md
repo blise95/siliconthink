@@ -20,11 +20,11 @@ Internet → Nginx (VPS) → Spring Boot
 
 - VPS can `ping` the NAS over Tailscale
 - NAS NFS (preferred) or SMB share created
-- Backend runs as `www-data` (see `silliconthink-backend.service`)
+- Backend runs as `www-data` (see `siliconthink-backend.service`)
 
 ## 1. NAS side
 
-1. Create a dedicated share, e.g. `silliconthink-blog`
+1. Create a dedicated share, e.g. `siliconthink-blog`
 2. Enable NFS; allow **only** the VPS Tailscale IP (or `100.64.0.0/10`) — **not** the public Internet
 3. Ensure the mapped user can write (align with Linux uid `33` / `www-data` when possible)
 4. Optional: enable NAS snapshots for `posts/` and `media/`
@@ -34,7 +34,7 @@ Record (keep private):
 | Item | Placeholder |
 |------|-------------|
 | NAS Tailscale address | `100.x.x.x` |
-| Export path | `/volume1/silliconthink-blog` |
+| Export path | `/volume1/siliconthink-blog` |
 
 ## 2. VPS: Tailscale
 
@@ -55,7 +55,7 @@ sudo mkdir -p /mnt/nas-blog
 Copy and edit [mnt-nas-blog.mount](./mnt-nas-blog.mount):
 
 ```bash
-sudo cp /opt/silliconthink/backend/deploy/mnt-nas-blog.mount /etc/systemd/system/
+sudo cp /opt/siliconthink/backend/deploy/mnt-nas-blog.mount /etc/systemd/system/
 # Edit What= to YOUR_NAS_EXPORT
 sudo systemctl daemon-reload
 sudo systemctl enable --now mnt-nas-blog.mount
@@ -68,16 +68,16 @@ Mount options use `_netdev`, `nofail`, `soft` so boot is not blocked and I/O can
 ### SMB appendix
 
 ```ini
-What=//100.x.x.x/silliconthink-blog
+What=//100.x.x.x/siliconthink-blog
 Type=cifs
-Options=_netdev,nofail,uid=33,gid=33,credentials=/etc/silliconthink/nas.cred
+Options=_netdev,nofail,uid=33,gid=33,credentials=/etc/siliconthink/nas.cred
 ```
 
-Create `/etc/silliconthink/nas.cred` with `chmod 600` — **do not** commit it.
+Create `/etc/siliconthink/nas.cred` with `chmod 600` — **do not** commit it.
 
 ## 4. Backend env & systemd
 
-`/etc/silliconthink/backend.env` (not in Git):
+`/etc/siliconthink/backend.env` (not in Git):
 
 ```bash
 BLOG_STORAGE_ROOT=/mnt/nas-blog
@@ -96,13 +96,13 @@ Restart:
 
 ```bash
 sudo systemctl daemon-reload
-sudo systemctl restart silliconthink-backend
+sudo systemctl restart siliconthink-backend
 ```
 
 ## 5. Database migration
 
 ```bash
-mysql -u... -p silliconthink < /opt/silliconthink/backend/src/main/resources/db/migration/2026-07-17-add-content-key.sql
+mysql -u... -p siliconthink < /opt/siliconthink/backend/src/main/resources/db/migration/2026-07-17-add-content-key.sql
 ```
 
 Export legacy `content_md` to objects (one-shot):
@@ -110,7 +110,7 @@ Export legacy `content_md` to objects (one-shot):
 ```bash
 # In backend.env for one restart only:
 BLOG_MIGRATE_CONTENT=true
-sudo systemctl restart silliconthink-backend
+sudo systemctl restart siliconthink-backend
 # Then remove BLOG_MIGRATE_CONTENT or set false
 ```
 

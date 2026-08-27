@@ -3,11 +3,11 @@
 # 用法: sudo bash server-setup.sh
 set -euo pipefail
 
-APP_DIR="${APP_DIR:-/opt/silliconthink}"
-JAR_DIR="${JAR_DIR:-/opt/silliconthink-runtime}"
-CONF_DIR="${CONF_DIR:-/etc/silliconthink}"
-LOG_DIR="${LOG_DIR:-/var/log/silliconthink}"
-SERVICE_NAME="silliconthink-backend"
+APP_DIR="${APP_DIR:-/opt/siliconthink}"
+JAR_DIR="${JAR_DIR:-/opt/siliconthink-runtime}"
+CONF_DIR="${CONF_DIR:-/etc/siliconthink}"
+LOG_DIR="${LOG_DIR:-/var/log/siliconthink}"
+SERVICE_NAME="siliconthink-backend"
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 
 echo "==> 安装 JDK 17 / Maven..."
@@ -44,7 +44,7 @@ fi
 
 echo "==> 安装 systemd 服务..."
 sed "s|/usr/lib/jvm/java-17-openjdk-amd64|${JAVA_HOME}|g" \
-  "$SCRIPT_DIR/silliconthink-backend.service" \
+  "$SCRIPT_DIR/siliconthink-backend.service" \
   > "/etc/systemd/system/${SERVICE_NAME}.service"
 
 systemctl daemon-reload

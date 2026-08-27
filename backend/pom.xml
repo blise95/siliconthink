@@ -11,10 +11,10 @@
         <relativePath/>
     </parent>
 
-    <groupId>com.silliconthink</groupId>
-    <artifactId>silliconthink-backend</artifactId>
+    <groupId>com.siliconthink</groupId>
+    <artifactId>siliconthink-backend</artifactId>
     <version>0.1.0-SNAPSHOT</version>
-    <name>silliconthink-backend</name>
+    <name>siliconthink-backend</name>
     <description>Silicon Think backend</description>
 
     <properties>

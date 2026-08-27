@@ -3,9 +3,9 @@
 # 在服务器上: sudo bash server-setup.sh
 set -euo pipefail
 
-REPO_URL="${REPO_URL:-https://github.com/blise95/silliconthink.git}"
-WEB_ROOT="${WEB_ROOT:-/var/www/silliconthink}"
-APP_DIR="${APP_DIR:-/opt/silliconthink}"
+REPO_URL="${REPO_URL:-https://github.com/blise95/siliconthink.git}"
+WEB_ROOT="${WEB_ROOT:-/var/www/siliconthink}"
+APP_DIR="${APP_DIR:-/opt/siliconthink}"
 DOMAIN="${DOMAIN:-siliconthink.top}"
 WWW_DOMAIN="${WWW_DOMAIN:-www.siliconthink.top}"
 
@@ -38,7 +38,7 @@ rsync -a --delete dist/ "$WEB_ROOT/"
 chown -R www-data:www-data "$WEB_ROOT"
 
 echo "==> 配置 Nginx..."
-cat > /etc/nginx/sites-available/silliconthink <<NGINX
+cat > /etc/nginx/sites-available/siliconthink <<NGINX
 server {
     listen 80;
     listen [::]:80;
@@ -63,7 +63,7 @@ server {
 }
 NGINX
 
-ln -sf /etc/nginx/sites-available/silliconthink /etc/nginx/sites-enabled/silliconthink
+ln -sf /etc/nginx/sites-available/siliconthink /etc/nginx/sites-enabled/siliconthink
 rm -f /etc/nginx/sites-enabled/default 2>/dev/null || true
 
 nginx -t

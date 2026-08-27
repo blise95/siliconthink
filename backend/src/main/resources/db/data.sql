@@ -1,7 +1,7 @@
 -- Default admin (change password before production!)
 -- username: admin
 -- password: Admin@123456
-USE silliconthink;
+USE siliconthink;
 
 INSERT INTO sys_user (
     username, password_hash, display_name, status, deleted,

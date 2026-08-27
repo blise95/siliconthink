@@ -6,7 +6,7 @@ Silicon Think is a personal website platform: public blog and portfolio, author 
 
 | | |
 |---|---|
-| **Repository** | https://github.com/blise95/silliconthink |
+| **Repository** | https://github.com/blise95/siliconthink |
 | **Runtime** | Java 17 · Node.js 18+ · MySQL 8 |
 | **Default site layout** | Nginx (static + reverse proxy) · systemd backend |
 
@@ -94,7 +94,7 @@ Subdirectories are created automatically on first write; you only need to create
 ## Repository layout
 
 ```text
-silliconthink/
+siliconthink/
 ├── README.md / README.zh-CN.md     # ← canonical documentation
 ├── deploy/                         # full-stack update entry
 ├── frontend/                       # Vue SPA + Nginx examples
@@ -183,7 +183,7 @@ VITE_API_BASE_URL=http://localhost:8080
 | `VITE_API_BASE_URL` | `http://localhost:8080` | API origin; leave empty in production to use same-origin `/api` |
 | `VITE_SITE_URL` | `http://localhost:5173` | Public site URL (SEO / absolute links) |
 
-### Backend environment (`/etc/silliconthink/backend.env` in production)
+### Backend environment (`/etc/siliconthink/backend.env` in production)
 
 Copy from `backend/deploy/backend.env.example`. **Never commit a filled env file.**
 
@@ -230,15 +230,15 @@ You do **not** need to pre-create `posts/` or `media/`; the application creates 
 ### Recommended production path (VPS local disk)
 
 ```bash
-sudo mkdir -p /var/lib/silliconthink/blog-storage
-sudo chown -R www-data:www-data /var/lib/silliconthink/blog-storage
-sudo chmod 750 /var/lib/silliconthink/blog-storage
+sudo mkdir -p /var/lib/siliconthink/blog-storage
+sudo chown -R www-data:www-data /var/lib/siliconthink/blog-storage
+sudo chmod 750 /var/lib/siliconthink/blog-storage
 ```
 
-In `/etc/silliconthink/backend.env`:
+In `/etc/siliconthink/backend.env`:
 
 ```bash
-BLOG_STORAGE_ROOT=/var/lib/silliconthink/blog-storage
+BLOG_STORAGE_ROOT=/var/lib/siliconthink/blog-storage
 ```
 
 ### Optional: NAS as the object-store root
@@ -249,59 +249,59 @@ If NFS/SMB over a private network (e.g. Tailscale) is available later, mount the
 
 | Path | Purpose |
 |------|---------|
-| `/opt/silliconthink` | Git working copy |
-| `/opt/silliconthink-runtime/app.jar` | Running backend JAR |
-| `/etc/silliconthink/backend.env` | Secrets & storage path (`chmod 640`, `root:www-data`) |
-| `/etc/silliconthink/application-prod.yml` | Optional extra Spring config |
-| `/var/www/silliconthink` | Frontend static files |
-| `/var/lib/silliconthink/blog-storage` | Blog bodies + media |
-| `/var/log/silliconthink/backend.log` | Backend log |
+| `/opt/siliconthink` | Git working copy |
+| `/opt/siliconthink-runtime/app.jar` | Running backend JAR |
+| `/etc/siliconthink/backend.env` | Secrets & storage path (`chmod 640`, `root:www-data`) |
+| `/etc/siliconthink/application-prod.yml` | Optional extra Spring config |
+| `/var/www/siliconthink` | Frontend static files |
+| `/var/lib/siliconthink/blog-storage` | Blog bodies + media |
+| `/var/log/siliconthink/backend.log` | Backend log |
 
 ---
 
 ## Production deployment
 
-Assumes Ubuntu-like host, code at `/opt/silliconthink`, tracking GitHub `main`.
+Assumes Ubuntu-like host, code at `/opt/siliconthink`, tracking GitHub `main`.
 
 ### 1. First-time host setup
 
 ```bash
 # Clone (once)
-sudo mkdir -p /opt/silliconthink
-sudo git clone https://github.com/blise95/silliconthink.git /opt/silliconthink
+sudo mkdir -p /opt/siliconthink
+sudo git clone https://github.com/blise95/siliconthink.git /opt/siliconthink
 
 # Frontend toolchain + Nginx site (see script)
-sudo bash /opt/silliconthink/frontend/deploy/server-setup.sh
+sudo bash /opt/siliconthink/frontend/deploy/server-setup.sh
 
 # Backend JDK/Maven + systemd (see script)
-sudo bash /opt/silliconthink/backend/deploy/server-setup.sh
+sudo bash /opt/siliconthink/backend/deploy/server-setup.sh
 ```
 
 ### 2. Database
 
 ```bash
-mysql -u root -p < /opt/silliconthink/backend/src/main/resources/db/schema.sql
-mysql -u root -p < /opt/silliconthink/backend/src/main/resources/db/data.sql
+mysql -u root -p < /opt/siliconthink/backend/src/main/resources/db/schema.sql
+mysql -u root -p < /opt/siliconthink/backend/src/main/resources/db/data.sql
 # Existing DBs upgrading to object storage:
-mysql -u ... -p silliconthink < \
-  /opt/silliconthink/backend/src/main/resources/db/migration/2026-07-17-add-content-key.sql
+mysql -u ... -p siliconthink < \
+  /opt/siliconthink/backend/src/main/resources/db/migration/2026-07-17-add-content-key.sql
 ```
 
 ### 3. Environment and storage
 
 ```bash
-sudo cp /opt/silliconthink/backend/deploy/backend.env.example \
-  /etc/silliconthink/backend.env
-sudo vim /etc/silliconthink/backend.env
-# Set DB_*, JWT_SECRET, BLOG_STORAGE_ROOT=/var/lib/silliconthink/blog-storage
-sudo chown root:www-data /etc/silliconthink/backend.env
-sudo chmod 640 /etc/silliconthink/backend.env
+sudo cp /opt/siliconthink/backend/deploy/backend.env.example \
+  /etc/siliconthink/backend.env
+sudo vim /etc/siliconthink/backend.env
+# Set DB_*, JWT_SECRET, BLOG_STORAGE_ROOT=/var/lib/siliconthink/blog-storage
+sudo chown root:www-data /etc/siliconthink/backend.env
+sudo chmod 640 /etc/siliconthink/backend.env
 
-sudo mkdir -p /var/lib/silliconthink/blog-storage
-sudo chown -R www-data:www-data /var/lib/silliconthink/blog-storage
+sudo mkdir -p /var/lib/siliconthink/blog-storage
+sudo chown -R www-data:www-data /var/lib/siliconthink/blog-storage
 ```
 
-Install / refresh systemd unit from `backend/deploy/silliconthink-backend.service` (adjust `JAVA_HOME` if needed). Do **not** enable `RequiresMountsFor=` unless storage is on a dedicated mount.
+Install / refresh systemd unit from `backend/deploy/siliconthink-backend.service` (adjust `JAVA_HOME` if needed). Do **not** enable `RequiresMountsFor=` unless storage is on a dedicated mount.
 
 ### 4. Nginx
 
@@ -319,11 +319,11 @@ sudo nginx -t && sudo systemctl reload nginx
 
 ```bash
 # Frontend + backend
-sudo bash /opt/silliconthink/deploy/update.sh
+sudo bash /opt/siliconthink/deploy/update.sh
 
 # Or separately
-sudo bash /opt/silliconthink/frontend/deploy/update.sh
-sudo bash /opt/silliconthink/backend/deploy/update.sh
+sudo bash /opt/siliconthink/frontend/deploy/update.sh
+sudo bash /opt/siliconthink/backend/deploy/update.sh
 ```
 
 ### 6. Optional one-shot content migration
@@ -333,7 +333,7 @@ If rows still hold legacy `content_md`:
 ```bash
 # In backend.env for a single restart:
 BLOG_MIGRATE_CONTENT=true
-sudo systemctl restart silliconthink-backend
+sudo systemctl restart siliconthink-backend
 # Then set BLOG_MIGRATE_CONTENT=false and restart again
 ```
 
@@ -370,20 +370,20 @@ After deploy:
 
 ```bash
 # Service
-systemctl is-active silliconthink-backend
+systemctl is-active siliconthink-backend
 
 # Storage writable by runtime user
-sudo -u www-data test -w /var/lib/silliconthink/blog-storage && echo OK
+sudo -u www-data test -w /var/lib/siliconthink/blog-storage && echo OK
 
 # API
 curl -sf 'http://127.0.0.1:8080/api/v1/posts?page=1' >/dev/null && echo OK
 
 # After creating a post / uploading an image
-sudo ls /var/lib/silliconthink/blog-storage/posts/
-sudo ls /var/lib/silliconthink/blog-storage/media/
+sudo ls /var/lib/siliconthink/blog-storage/posts/
+sudo ls /var/lib/siliconthink/blog-storage/media/
 ```
 
-Log file: `/var/log/silliconthink/backend.log` (look for `Blog object storage root OK`).
+Log file: `/var/log/siliconthink/backend.log` (look for `Blog object storage root OK`).
 
 ---
 
@@ -396,6 +396,17 @@ Log file: `/var/log/silliconthink/backend.log` (look for `Blog object storage ro
 | `/uploads/` 404 in browser | Nginx missing `/uploads/` proxy | Apply `nginx.conf.example` |
 | Backend won't start with mount dependency | Leftover `RequiresMountsFor=` | Use current unit without NAS requires |
 | NFS `Permission denied` | NAS ACL / wrong client IP | Fix NAS NFS allow-list (optional path) |
+
+---
+
+## Renaming from `silliconthink` (legacy typo)
+
+The canonical spelling is **`siliconthink`** (Silicon + think). If you still use old paths or the old GitHub repo name:
+
+1. **GitHub**: Settings → Repository name → `siliconthink`
+2. **Local remote**: `git remote set-url origin git@github.com:blise95/siliconthink.git`
+3. **Server** (one-time): `sudo bash /opt/silliconthink/deploy/rename-from-silliconthink.sh`
+4. **MySQL**: new installs use `schema.sql` (`siliconthink` database); existing DBs need dump/import and `DB_NAME` update in `/etc/siliconthink/backend.env`
 
 ---
 

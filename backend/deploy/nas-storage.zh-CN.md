@@ -20,11 +20,11 @@
 
 - 香草云已能经 Tailscale `ping` 通 NAS
 - NAS 已建 NFS（优先）或 SMB 共享
-- 后端以 `www-data` 运行（见 `silliconthink-backend.service`）
+- 后端以 `www-data` 运行（见 `siliconthink-backend.service`）
 
 ## 1. NAS 侧
 
-1. 创建专用共享，例如 `silliconthink-blog`
+1. 创建专用共享，例如 `siliconthink-blog`
 2. 开启 NFS；仅允许香草云 Tailscale IP（或 `100.64.0.0/10`）——**不要**对公网开放
 3. 保证映射用户可写（尽量对齐 Linux uid `33` / `www-data`）
 4. 可选：对共享开启快照，备份 `posts/` 与 `media/`
@@ -34,7 +34,7 @@
 | 项 | 占位 |
 |----|------|
 | NAS Tailscale 地址 | `100.x.x.x` |
-| 导出路径 | `/volume1/silliconthink-blog` |
+| 导出路径 | `/volume1/siliconthink-blog` |
 
 ## 2. 香草云：Tailscale
 
@@ -54,7 +54,7 @@ sudo mkdir -p /mnt/nas-blog
 复制并编辑 [mnt-nas-blog.mount](./mnt-nas-blog.mount)：
 
 ```bash
-sudo cp /opt/silliconthink/backend/deploy/mnt-nas-blog.mount /etc/systemd/system/
+sudo cp /opt/siliconthink/backend/deploy/mnt-nas-blog.mount /etc/systemd/system/
 # 将 What= 改为真实导出路径
 sudo systemctl daemon-reload
 sudo systemctl enable --now mnt-nas-blog.mount
@@ -67,16 +67,16 @@ sudo -u www-data touch /mnt/nas-blog/.write-test && sudo -u www-data rm /mnt/nas
 ### SMB 附录
 
 ```ini
-What=//100.x.x.x/silliconthink-blog
+What=//100.x.x.x/siliconthink-blog
 Type=cifs
-Options=_netdev,nofail,uid=33,gid=33,credentials=/etc/silliconthink/nas.cred
+Options=_netdev,nofail,uid=33,gid=33,credentials=/etc/siliconthink/nas.cred
 ```
 
 凭据文件 `chmod 600`，**不要**提交到 Git。
 
 ## 4. 后端环境变量与 systemd
 
-`/etc/silliconthink/backend.env`（不进 Git）：
+`/etc/siliconthink/backend.env`（不进 Git）：
 
 ```bash
 BLOG_STORAGE_ROOT=/mnt/nas-blog
@@ -93,13 +93,13 @@ RequiresMountsFor=/mnt/nas-blog
 
 ```bash
 sudo systemctl daemon-reload
-sudo systemctl restart silliconthink-backend
+sudo systemctl restart siliconthink-backend
 ```
 
 ## 5. 数据库迁移
 
 ```bash
-mysql -u... -p silliconthink < /opt/silliconthink/backend/src/main/resources/db/migration/2026-07-17-add-content-key.sql
+mysql -u... -p siliconthink < /opt/siliconthink/backend/src/main/resources/db/migration/2026-07-17-add-content-key.sql
 ```
 
 一次性导出旧 `content_md` 到对象存储：
@@ -107,7 +107,7 @@ mysql -u... -p silliconthink < /opt/silliconthink/backend/src/main/resources/db/
 ```bash
 # 仅一次重启时写入 backend.env：
 BLOG_MIGRATE_CONTENT=true
-sudo systemctl restart silliconthink-backend
+sudo systemctl restart siliconthink-backend
 # 完成后删除该变量或设为 false
 ```
 

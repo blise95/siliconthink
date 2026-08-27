@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
-# 服务器上更新前端站点（代码已 clone 到 /opt/silliconthink 时）
-# 用法: sudo bash /opt/silliconthink/frontend/deploy/update.sh
+# 服务器上更新前端站点（代码已 clone 到 /opt/siliconthink 时）
+# 用法: sudo bash /opt/siliconthink/frontend/deploy/update.sh
 # 选项: --skip-git  不拉取代码
 set -euo pipefail
 
-APP_DIR="${APP_DIR:-/opt/silliconthink}"
-WEB_ROOT="${WEB_ROOT:-/var/www/silliconthink}"
+APP_DIR="${APP_DIR:-/opt/siliconthink}"
+WEB_ROOT="${WEB_ROOT:-/var/www/siliconthink}"
 
 SKIP_GIT=0
 for arg in "$@"; do

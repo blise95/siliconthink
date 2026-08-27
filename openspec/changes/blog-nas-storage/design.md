@@ -151,7 +151,7 @@ List / latest:
 
 #### 8.2 NAS 侧准备
 
-1. 在 NAS 创建专用共享，例如 `silliconthink-blog`（群晖 Shared Folder / TrueNAS Dataset）。
+1. 在 NAS 创建专用共享，例如 `siliconthink-blog`（群晖 Shared Folder / TrueNAS Dataset）。
 2. 共享内预建（或由应用首次 `put` 自动创建）：
    - `posts/`
    - `media/`
@@ -166,7 +166,7 @@ List / latest:
 | 项 | 示例（占位） |
 |----|----------------|
 | NAS Tailscale IP 或 MagicDNS | `100.x.y.z` / `nas.tailnet.ts.net` |
-| 导出路径 | `/volume1/silliconthink-blog` |
+| 导出路径 | `/volume1/siliconthink-blog` |
 | 协议 | NFS v4（或 SMB） |
 
 #### 8.3 香草云：Tailscale
@@ -191,7 +191,7 @@ After=network-online.target tailscaled.service
 Wants=network-online.target tailscaled.service
 
 [Mount]
-What=100.x.x.x:/volume1/silliconthink-blog
+What=100.x.x.x:/volume1/siliconthink-blog
 Where=/mnt/nas-blog
 Type=nfs
 Options=_netdev,nofail,soft,timeo=50,retrans=2,nfsvers=4
@@ -221,7 +221,7 @@ sudo -u www-data touch /mnt/nas-blog/.write-test && sudo -u www-data rm /mnt/nas
 | `soft` | I/O 失败可返回错误，避免进程永久卡住 |
 | `RequiresMountsFor=/mnt/nas-blog` | 用在后端 service，保证有挂载再跑业务（见 8.5） |
 
-SMB 附录（设计文档级）：`What=//100.x.x.x/silliconthink-blog`，`Type=cifs`，`Options=_netdev,nofail,uid=33,gid=33,credentials=/etc/silliconthink/nas.cred`；凭据文件 `chmod 600`。
+SMB 附录（设计文档级）：`What=//100.x.x.x/siliconthink-blog`，`Type=cifs`，`Options=_netdev,nofail,uid=33,gid=33,credentials=/etc/siliconthink/nas.cred`；凭据文件 `chmod 600`。
 
 #### 8.5 香草云：后端服务部署衔接
 
@@ -229,11 +229,11 @@ SMB 附录（设计文档级）：`What=//100.x.x.x/silliconthink-blog`，`Type=
 
 | 路径 | 用途 |
 |------|------|
-| `/opt/silliconthink` | 代码仓库 |
-| `/opt/silliconthink-runtime/app.jar` | 运行包 |
-| `/etc/silliconthink/backend.env` | 环境变量 |
-| `/etc/silliconthink/application-prod.yml` | 额外 YAML |
-| `silliconthink-backend.service` | systemd |
+| `/opt/siliconthink` | 代码仓库 |
+| `/opt/siliconthink-runtime/app.jar` | 运行包 |
+| `/etc/siliconthink/backend.env` | 环境变量 |
+| `/etc/siliconthink/application-prod.yml` | 额外 YAML |
+| `siliconthink-backend.service` | systemd |
 
 **`backend.env` 增补：**
 
@@ -242,7 +242,7 @@ BLOG_STORAGE_ROOT=/mnt/nas-blog
 UPLOAD_DIR=/mnt/nas-blog/media
 ```
 
-**`silliconthink-backend.service` 调整：**
+**`siliconthink-backend.service` 调整：**
 
 ```ini
 [Unit]
@@ -254,7 +254,7 @@ RequiresMountsFor=/mnt/nas-blog
 [Service]
 User=www-data
 Group=www-data
-EnvironmentFile=-/etc/silliconthink/backend.env
+EnvironmentFile=-/etc/siliconthink/backend.env
 # ... 其余保持现有 ExecStart / 日志约定
 ```
 
@@ -321,7 +321,7 @@ findmnt /mnt/nas-blog >/dev/null && \
 | `backend/deploy/nas-storage.zh-CN.md` | 中文部署实施（与英文内容对等） |
 | `backend/deploy/mnt-nas-blog.mount` | systemd 挂载示例（占位 IP/路径） |
 | `backend/deploy/backend.env.example` | 含 `BLOG_STORAGE_ROOT` / `UPLOAD_DIR`，无真实密钥 |
-| `backend/deploy/silliconthink-backend.service` | `After` / `RequiresMountsFor` |
+| `backend/deploy/siliconthink-backend.service` | `After` / `RequiresMountsFor` |
 | `frontend/deploy/nginx.conf.example` | `/uploads/` 反代或 alias 注释说明 |
 | 迁移脚本/命令 | DB `content_md` → NAS 对象 |
 | `README.md` / `README.zh-CN.md` | 见 §9 |
@@ -339,7 +339,7 @@ GitHub 公开仓库中的说明类文件 SHALL 遵守：
 
 服务器侧真实值只写在：
 
-- `/etc/silliconthink/backend.env`（`chmod 640`，不进 Git）
+- `/etc/siliconthink/backend.env`（`chmod 640`，不进 Git）
 - systemd 覆盖或本地未跟踪文件
 - NAS 管理界面 / Tailscale ACL 控制台
 

@@ -22,7 +22,7 @@
 ### 1. 仓库结构（仅前端）
 
 ```
-silliconthink/
+siliconthink/
 ├── frontend/
 │   ├── src/
 │   │   ├── assets/           # 静态资源、头像、封面占位图

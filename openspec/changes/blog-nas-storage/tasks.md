@@ -25,7 +25,7 @@
 - [x] 4.1 更新 `backend.env.example`：`BLOG_STORAGE_ROOT`、`UPLOAD_DIR`；仅占位符，注释强调勿提交真实 env
 - [x] 4.2 新增 `backend/deploy/nas-storage.md`（英文）与 `nas-storage.zh-CN.md`（中文）：按 design §8 对等撰写，含 Security 专节
 - [x] 4.3 新增 `backend/deploy/mnt-nas-blog.mount`（NFS 占位 IP/路径）；文档附 SMB 示例且凭据文件不进 Git
-- [x] 4.4 更新 `silliconthink-backend.service`：`After=mnt-nas-blog.mount`、`RequiresMountsFor=/mnt/nas-blog`
+- [x] 4.4 更新 `siliconthink-backend.service`：`After=mnt-nas-blog.mount`、`RequiresMountsFor=/mnt/nas-blog`
 - [x] 4.5 更新 `nginx.conf.example`：补齐 `/uploads/` 反代（方案 A），注释可选 alias（方案 B）
 - [x] 4.6 `server-setup.sh` 提示链接中英 nas-storage 文档；可选挂载健康检查片段
 - [x] 4.7 确认 `.gitignore` 覆盖 `backend.env`、`*.cred`、`application-local.yml` 等敏感路径

@@ -1,6 +1,6 @@
 [Unit]
 Description=Silicon Think blog object storage (NAS via Tailscale)
-Documentation=file:///opt/silliconthink/backend/deploy/nas-storage.md
+Documentation=file:///opt/siliconthink/backend/deploy/nas-storage.md
 After=network-online.target tailscaled.service
 Wants=network-online.target tailscaled.service
 

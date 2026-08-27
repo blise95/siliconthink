@@ -1,14 +1,14 @@
 #!/usr/bin/env bash
 # 服务器上构建并重启后端（代码已在 APP_DIR）
-# 用法: sudo bash /opt/silliconthink/backend/deploy/update.sh
+# 用法: sudo bash /opt/siliconthink/backend/deploy/update.sh
 # 选项: --skip-git  不拉取代码（由上层统一 pull 时用）
 set -euo pipefail
 
-APP_DIR="${APP_DIR:-/opt/silliconthink}"
+APP_DIR="${APP_DIR:-/opt/siliconthink}"
 BACKEND_DIR="$APP_DIR/backend"
-JAR_DIR="${JAR_DIR:-/opt/silliconthink-runtime}"
-LOG_DIR="${LOG_DIR:-/var/log/silliconthink}"
-SERVICE_NAME="${SERVICE_NAME:-silliconthink-backend}"
+JAR_DIR="${JAR_DIR:-/opt/siliconthink-runtime}"
+LOG_DIR="${LOG_DIR:-/var/log/siliconthink}"
+SERVICE_NAME="${SERVICE_NAME:-siliconthink-backend}"
 JAVA_HOME="${JAVA_HOME:-/usr/lib/jvm/java-17-openjdk-amd64}"
 
 SKIP_GIT=0
@@ -52,7 +52,7 @@ echo "==> Maven 打包..."
 cd "$BACKEND_DIR"
 mvn -q -DskipTests package
 
-JAR_SRC="$(ls -1 "$BACKEND_DIR"/target/silliconthink-backend-*.jar | grep -v '\.original$' | head -1)"
+JAR_SRC="$(ls -1 "$BACKEND_DIR"/target/siliconthink-backend-*.jar | grep -v '\.original$' | head -1)"
 if [[ -z "$JAR_SRC" || ! -f "$JAR_SRC" ]]; then
   echo "未找到可执行 jar"
   exit 1

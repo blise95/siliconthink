@@ -1,5 +1,5 @@
-# 复制到服务器: /etc/silliconthink/application-prod.yml
-# 库名 / 账号 / 密码等敏感项请写在 /etc/silliconthink/backend.env（环境变量）
+# 复制到服务器: /etc/siliconthink/application-prod.yml
+# 库名 / 账号 / 密码等敏感项请写在 /etc/siliconthink/backend.env（环境变量）
 # 不要把真实密码提交到 Git
 
 server:
@@ -28,7 +28,7 @@ app:
 
 logging:
   file:
-    path: ${LOG_PATH:/var/log/silliconthink}
+    path: ${LOG_PATH:/var/log/siliconthink}
   level:
-    com.silliconthink: INFO
+    com.siliconthink: INFO
     root: WARN

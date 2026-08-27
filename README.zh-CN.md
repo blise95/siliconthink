@@ -6,7 +6,7 @@ Silicon Think 是一套个人站点方案：公开博客与作品集、作者写
 
 | | |
 |---|---|
-| **仓库** | https://github.com/blise95/silliconthink |
+| **仓库** | https://github.com/blise95/siliconthink |
 | **运行时** | Java 17 · Node.js 18+ · MySQL 8 |
 | **典型部署** | Nginx（静态站点 + 反代）· systemd 托管后端 |
 
@@ -94,7 +94,7 @@ Silicon Think 是一套个人站点方案：公开博客与作品集、作者写
 ## 仓库结构
 
 ```text
-silliconthink/
+siliconthink/
 ├── README.md / README.zh-CN.md     # ← 工程唯一权威文档
 ├── deploy/                         # 前后端一并更新入口
 ├── frontend/                       # Vue SPA + Nginx 示例
@@ -183,7 +183,7 @@ VITE_API_BASE_URL=http://localhost:8080
 | `VITE_API_BASE_URL` | `http://localhost:8080` | API 根地址；生产可留空走同源 `/api` |
 | `VITE_SITE_URL` | `http://localhost:5173` | 站点对外 URL（SEO 等） |
 
-### 后端环境变量（生产：`/etc/silliconthink/backend.env`）
+### 后端环境变量（生产：`/etc/siliconthink/backend.env`）
 
 从 `backend/deploy/backend.env.example` 复制。**切勿提交填好密钥的 env。**
 
@@ -228,15 +228,15 @@ Spring 配置对应关系：
 ### 生产推荐（香草云等 VPS 本机盘）
 
 ```bash
-sudo mkdir -p /var/lib/silliconthink/blog-storage
-sudo chown -R www-data:www-data /var/lib/silliconthink/blog-storage
-sudo chmod 750 /var/lib/silliconthink/blog-storage
+sudo mkdir -p /var/lib/siliconthink/blog-storage
+sudo chown -R www-data:www-data /var/lib/siliconthink/blog-storage
+sudo chmod 750 /var/lib/siliconthink/blog-storage
 ```
 
-`/etc/silliconthink/backend.env`：
+`/etc/siliconthink/backend.env`：
 
 ```bash
-BLOG_STORAGE_ROOT=/var/lib/silliconthink/blog-storage
+BLOG_STORAGE_ROOT=/var/lib/siliconthink/blog-storage
 ```
 
 ### 可选：NAS 作为对象存储根
@@ -247,55 +247,55 @@ BLOG_STORAGE_ROOT=/var/lib/silliconthink/blog-storage
 
 | 路径 | 用途 |
 |------|------|
-| `/opt/silliconthink` | Git 工作副本 |
-| `/opt/silliconthink-runtime/app.jar` | 运行中的后端 JAR |
-| `/etc/silliconthink/backend.env` | 密钥与存储路径（`chmod 640`，`root:www-data`） |
-| `/etc/silliconthink/application-prod.yml` | 可选额外 Spring 配置 |
-| `/var/www/silliconthink` | 前端静态资源 |
-| `/var/lib/silliconthink/blog-storage` | 博客正文 + 媒体 |
-| `/var/log/silliconthink/backend.log` | 后端日志 |
+| `/opt/siliconthink` | Git 工作副本 |
+| `/opt/siliconthink-runtime/app.jar` | 运行中的后端 JAR |
+| `/etc/siliconthink/backend.env` | 密钥与存储路径（`chmod 640`，`root:www-data`） |
+| `/etc/siliconthink/application-prod.yml` | 可选额外 Spring 配置 |
+| `/var/www/siliconthink` | 前端静态资源 |
+| `/var/lib/siliconthink/blog-storage` | 博客正文 + 媒体 |
+| `/var/log/siliconthink/backend.log` | 后端日志 |
 
 ---
 
 ## 生产部署
 
-假设 Ubuntu 类主机，代码位于 `/opt/silliconthink`，跟踪 GitHub `main`。
+假设 Ubuntu 类主机，代码位于 `/opt/siliconthink`，跟踪 GitHub `main`。
 
 ### 1. 首次初始化
 
 ```bash
-sudo mkdir -p /opt/silliconthink
-sudo git clone https://github.com/blise95/silliconthink.git /opt/silliconthink
+sudo mkdir -p /opt/siliconthink
+sudo git clone https://github.com/blise95/siliconthink.git /opt/siliconthink
 
-sudo bash /opt/silliconthink/frontend/deploy/server-setup.sh
-sudo bash /opt/silliconthink/backend/deploy/server-setup.sh
+sudo bash /opt/siliconthink/frontend/deploy/server-setup.sh
+sudo bash /opt/siliconthink/backend/deploy/server-setup.sh
 ```
 
 ### 2. 数据库
 
 ```bash
-mysql -u root -p < /opt/silliconthink/backend/src/main/resources/db/schema.sql
-mysql -u root -p < /opt/silliconthink/backend/src/main/resources/db/data.sql
+mysql -u root -p < /opt/siliconthink/backend/src/main/resources/db/schema.sql
+mysql -u root -p < /opt/siliconthink/backend/src/main/resources/db/data.sql
 # 已有库升级对象存储：
-mysql -u ... -p silliconthink < \
-  /opt/silliconthink/backend/src/main/resources/db/migration/2026-07-17-add-content-key.sql
+mysql -u ... -p siliconthink < \
+  /opt/siliconthink/backend/src/main/resources/db/migration/2026-07-17-add-content-key.sql
 ```
 
 ### 3. 环境变量与存储目录
 
 ```bash
-sudo cp /opt/silliconthink/backend/deploy/backend.env.example \
-  /etc/silliconthink/backend.env
-sudo vim /etc/silliconthink/backend.env
-# 填写 DB_*、JWT_SECRET、BLOG_STORAGE_ROOT=/var/lib/silliconthink/blog-storage
-sudo chown root:www-data /etc/silliconthink/backend.env
-sudo chmod 640 /etc/silliconthink/backend.env
+sudo cp /opt/siliconthink/backend/deploy/backend.env.example \
+  /etc/siliconthink/backend.env
+sudo vim /etc/siliconthink/backend.env
+# 填写 DB_*、JWT_SECRET、BLOG_STORAGE_ROOT=/var/lib/siliconthink/blog-storage
+sudo chown root:www-data /etc/siliconthink/backend.env
+sudo chmod 640 /etc/siliconthink/backend.env
 
-sudo mkdir -p /var/lib/silliconthink/blog-storage
-sudo chown -R www-data:www-data /var/lib/silliconthink/blog-storage
+sudo mkdir -p /var/lib/siliconthink/blog-storage
+sudo chown -R www-data:www-data /var/lib/siliconthink/blog-storage
 ```
 
-从 `backend/deploy/silliconthink-backend.service` 安装/更新 systemd（按需改 `JAVA_HOME`）。**未使用 NAS 挂载时不要启用 `RequiresMountsFor=`。**
+从 `backend/deploy/siliconthink-backend.service` 安装/更新 systemd（按需改 `JAVA_HOME`）。**未使用 NAS 挂载时不要启用 `RequiresMountsFor=`。**
 
 ### 4. Nginx
 
@@ -312,11 +312,11 @@ sudo nginx -t && sudo systemctl reload nginx
 ### 5. 发布 / 更新
 
 ```bash
-sudo bash /opt/silliconthink/deploy/update.sh
+sudo bash /opt/siliconthink/deploy/update.sh
 
 # 或分别更新
-sudo bash /opt/silliconthink/frontend/deploy/update.sh
-sudo bash /opt/silliconthink/backend/deploy/update.sh
+sudo bash /opt/siliconthink/frontend/deploy/update.sh
+sudo bash /opt/siliconthink/backend/deploy/update.sh
 ```
 
 ### 6. 可选：一次性正文迁移
@@ -326,7 +326,7 @@ sudo bash /opt/silliconthink/backend/deploy/update.sh
 ```bash
 # backend.env 中临时：
 BLOG_MIGRATE_CONTENT=true
-sudo systemctl restart silliconthink-backend
+sudo systemctl restart siliconthink-backend
 # 完成后改回 false 再重启
 ```
 
@@ -362,18 +362,18 @@ API 前缀：`/api/v1`。统一响应：`{ "code": 0, "message": "ok", "data": .
 部署后建议执行：
 
 ```bash
-systemctl is-active silliconthink-backend
+systemctl is-active siliconthink-backend
 
-sudo -u www-data test -w /var/lib/silliconthink/blog-storage && echo OK
+sudo -u www-data test -w /var/lib/siliconthink/blog-storage && echo OK
 
 curl -sf 'http://127.0.0.1:8080/api/v1/posts?page=1' >/dev/null && echo OK
 
 # 新建文章 / 上传图片后
-sudo ls /var/lib/silliconthink/blog-storage/posts/
-sudo ls /var/lib/silliconthink/blog-storage/media/
+sudo ls /var/lib/siliconthink/blog-storage/posts/
+sudo ls /var/lib/siliconthink/blog-storage/media/
 ```
 
-日志：`/var/log/silliconthink/backend.log`（可搜 `Blog object storage root OK`）。
+日志：`/var/log/siliconthink/backend.log`（可搜 `Blog object storage root OK`）。
 
 ---
 
@@ -386,6 +386,17 @@ sudo ls /var/lib/silliconthink/blog-storage/media/
 | 浏览器 `/uploads/` 404 | Nginx 未配置 `/uploads/` | 按 `nginx.conf.example` 补齐 |
 | 服务因挂载依赖起不来 | 残留 `RequiresMountsFor=` | 使用当前无 NAS 强制依赖的 unit |
 | NFS `Permission denied` | NAS ACL / 客户端 IP 错误 | 修正 NFS 白名单（可选方案） |
+
+---
+
+## 拼写更正（旧名 `silliconthink`）
+
+规范拼写为 **`siliconthink`**（Silicon + think）。若仍使用旧路径或旧 GitHub 仓库名：
+
+1. **GitHub**：Settings → Repository name → `siliconthink`
+2. **本地 remote**：`git remote set-url origin git@github.com:blise95/siliconthink.git`
+3. **服务器一次性迁移**：`sudo bash /opt/silliconthink/deploy/rename-from-silliconthink.sh`
+4. **MySQL**：新环境直接跑 `schema.sql`；旧库需 dump 导入并更新 `/etc/siliconthink/backend.env` 中的 `DB_NAME`
 
 ---
 

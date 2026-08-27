@@ -1,6 +1,6 @@
-CREATE DATABASE IF NOT EXISTS silliconthink DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+CREATE DATABASE IF NOT EXISTS siliconthink DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
-USE silliconthink;
+USE siliconthink;
 
 CREATE TABLE IF NOT EXISTS sys_user (
     id              BIGINT       NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT '主键ID',

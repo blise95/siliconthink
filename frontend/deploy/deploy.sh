@@ -4,7 +4,7 @@
 set -euo pipefail
 
 REMOTE="${1:-}"
-REMOTE_DIR="/var/www/silliconthink"
+REMOTE_DIR="/var/www/siliconthink"
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 FRONTEND_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
 

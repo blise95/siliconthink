@@ -1,6 +1,6 @@
 # Nginx 配置 — siliconthink.top（前端静态 + 后端 API 反代）
-# sudo cp nginx.conf.example /etc/nginx/sites-available/silliconthink
-# sudo ln -sf /etc/nginx/sites-available/silliconthink /etc/nginx/sites-enabled/
+# sudo cp nginx.conf.example /etc/nginx/sites-available/siliconthink
+# sudo ln -sf /etc/nginx/sites-available/siliconthink /etc/nginx/sites-enabled/
 # sudo nginx -t && sudo systemctl reload nginx
 
 server {
@@ -8,7 +8,7 @@ server {
     listen [::]:80;
     server_name siliconthink.top www.siliconthink.top;
 
-    root /var/www/silliconthink;
+    root /var/www/siliconthink;
     index index.html;
 
     # 后端 API（本机 Spring Boot :8080）

@@ -78,7 +78,7 @@
 ### 7. 包结构（扩展）
 
 ```
-com.silliconthink
+com.siliconthink
 ├── common/ config/ exception/
 ├── auth/
 │   ├── controller/     # AuthController, OAuthController

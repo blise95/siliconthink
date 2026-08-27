@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 # 香草云单节点：拉取 GitHub main，发布前端 + 后端
-# 用法（服务器）: sudo bash /opt/silliconthink/deploy/update.sh
+# 用法（服务器）: sudo bash /opt/siliconthink/deploy/update.sh
 set -euo pipefail
 
-APP_DIR="${APP_DIR:-/opt/silliconthink}"
+APP_DIR="${APP_DIR:-/opt/siliconthink}"
 BRANCH="${BRANCH:-main}"
 
 cd "$APP_DIR"
