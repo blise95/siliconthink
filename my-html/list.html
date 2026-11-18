@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex,nofollow" />
+    <title>已上传列表 · my_html</title>
+    <link rel="stylesheet" href="./css/style.css" />
+  </head>
+  <body>
+    <div class="wrap">
+      <nav class="nav">
+        <a href="./">上传</a>
+        <a class="is-active" href="./list.html">列表</a>
+      </nav>
+
+      <h1>已上传 HTML</h1>
+      <p class="lead">可随时出示或下载二维码；扫码打开页面无需口令。删除会去掉文件与列表记录。</p>
+
+      <p class="status" id="status">加载中…</p>
+      <ul class="list" id="list"></ul>
+      <p class="empty" id="empty" hidden>还没有文件，去上传页加一个吧。</p>
+    </div>
+
+    <div class="modal" id="modal" hidden>
+      <div class="modal__panel">
+        <h2 id="modalTitle">二维码</h2>
+        <div class="qr-host"><canvas id="modalQr" width="220" height="220"></canvas></div>
+        <div class="link" id="modalLink"></div>
+        <div class="row">
+          <button class="btn" id="modalDl" type="button">下载二维码</button>
+          <button class="btn btn--ghost" id="modalClose" type="button">关闭</button>
+        </div>
+      </div>
+    </div>
+
+    <script type="module">
+      import QRCode from 'https://cdn.jsdelivr.net/npm/qrcode@1.5.4/+esm'
+      import {
+        loadManifest,
+        deleteItem,
+        formatTime,
+        downloadQrFromCanvas,
+        qrFilename,
+      } from './js/app.js'
+
+      const statusEl = document.getElementById('status')
+      const listEl = document.getElementById('list')
+      const emptyEl = document.getElementById('empty')
+      const modal = document.getElementById('modal')
+      const modalTitle = document.getElementById('modalTitle')
+      const modalLink = document.getElementById('modalLink')
+      const modalQr = document.getElementById('modalQr')
+      const modalDl = document.getElementById('modalDl')
+      const modalClose = document.getElementById('modalClose')
+      let modalItem = null
+
+      function setStatus(text, kind = '') {
+        statusEl.textContent = text || ''
+        statusEl.className = 'status' + (kind ? ` is-${kind}` : '')
+      }
+
+      async function showQr(item) {
+        modalItem = item
+        modalTitle.textContent = item.name
+        modalLink.textContent = item.url
+        await QRCode.toCanvas(modalQr, item.url, {
+          width: 220,
+          margin: 1,
+          color: { dark: '#1f1a17', light: '#ffffff' },
+        })
+        modal.hidden = false
+      }
+
+      async function render() {
+        setStatus('加载中…')
+        listEl.innerHTML = ''
+        try {
+          const { items } = await loadManifest()
+          if (!items.length) {
+            emptyEl.hidden = false
+            setStatus('')
+            return
+          }
+          emptyEl.hidden = true
+          for (const item of items) {
+            const li = document.createElement('li')
+            li.innerHTML = `
+              <div class="list__title"></div>
+              <div class="list__meta"></div>
+              <div class="list__actions">
+                <a class="btn btn--ghost" target="_blank" rel="noopener">打开</a>
+                <button class="btn btn--ghost" type="button" data-act="qr">二维码</button>
+                <button class="btn btn--ghost" type="button" data-act="dl">下载二维码</button>
+                <button class="btn btn--danger" type="button" data-act="del">删除</button>
+              </div>
+            `
+            li.querySelector('.list__title').textContent = item.name
+            li.querySelector('.list__meta').textContent =
+              `${formatTime(item.uploadedAt)} · ${item.id}`
+            const open = li.querySelector('a')
+            open.href = item.url
+            li.querySelector('[data-act="qr"]').addEventListener('click', () => showQr(item))
+            li.querySelector('[data-act="dl"]').addEventListener('click', async () => {
+              try {
+                await showQr(item)
+                downloadQrFromCanvas(modalQr, qrFilename(item))
+                setStatus('二维码已下载', 'ok')
+              } catch (err) {
+                setStatus(err instanceof Error ? err.message : '下载失败', 'error')
+              }
+            })
+            li.querySelector('[data-act="del"]').addEventListener('click', async () => {
+              if (!confirm(`删除「${item.name}」？`)) return
+              try {
+                await deleteItem(item.id)
+                await render()
+                setStatus('已删除', 'ok')
+              } catch (err) {
+                setStatus(err instanceof Error ? err.message : '删除失败', 'error')
+              }
+            })
+            listEl.appendChild(li)
+          }
+          setStatus(`共 ${items.length} 个`)
+        } catch (err) {
+          setStatus(err instanceof Error ? err.message : '加载失败', 'error')
+        }
+      }
+
+      modalDl.addEventListener('click', () => {
+        try {
+          downloadQrFromCanvas(modalQr, qrFilename(modalItem || { id: 'page' }))
+          setStatus('二维码已下载', 'ok')
+        } catch (err) {
+          setStatus(err instanceof Error ? err.message : '下载失败', 'error')
+        }
+      })
+      modalClose.addEventListener('click', () => {
+        modal.hidden = true
+      })
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal) modal.hidden = true
+      })
+
+      render()
+    </script>
+  </body>
+</html>

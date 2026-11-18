@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex,nofollow" />
+    <title>上传 HTML · my_html</title>
+    <link rel="stylesheet" href="./css/style.css" />
+  </head>
+  <body>
+    <div class="wrap">
+      <nav class="nav">
+        <a class="is-active" href="./">上传</a>
+        <a href="./list.html">列表</a>
+      </nav>
+
+      <h1>上传 HTML</h1>
+      <p class="lead">选一个网页文件，生成可扫码打开的公开链接（扫码免口令；上传/列表需口令）。</p>
+
+      <div class="card">
+        <label class="drop" id="dropzone">
+          <strong>点击或拖拽上传</strong>
+          <span>仅 .html / .htm，最大 2MB</span>
+          <input id="file" type="file" accept=".html,.htm,text/html" />
+        </label>
+        <div class="row">
+          <button class="btn" id="btnUpload" type="button" disabled>开始上传</button>
+          <span class="status" id="status"></span>
+        </div>
+      </div>
+
+      <div class="card" id="result" hidden>
+        <h2 style="margin: 0 0 0.75rem; font-size: 1.05rem">上传成功</h2>
+        <div class="qr-box">
+          <canvas id="qr" width="200" height="200" aria-label="二维码"></canvas>
+          <div class="link" id="link"></div>
+          <div class="row">
+            <button class="btn btn--ghost" id="btnCopy" type="button">复制链接</button>
+            <button class="btn btn--ghost" id="btnDlQr" type="button">下载二维码</button>
+            <a class="btn btn--ghost" id="btnOpen" href="#" target="_blank" rel="noopener">打开页面</a>
+          </div>
+        </div>
+      </div>
+
+      <p class="hint">
+        管理口令用户名 <code>binge</code>。扫码打开的页面本身不需要口令。
+        列表页可随时再下载二维码。路径前缀 <code>/my_html</code>。
+      </p>
+    </div>
+
+    <script type="module">
+      import QRCode from 'https://cdn.jsdelivr.net/npm/qrcode@1.5.4/+esm'
+      import { uploadHtmlFile, downloadQrFromCanvas, qrFilename } from './js/app.js'
+
+      const fileInput = document.getElementById('file')
+      const dropzone = document.getElementById('dropzone')
+      const btnUpload = document.getElementById('btnUpload')
+      const statusEl = document.getElementById('status')
+      const result = document.getElementById('result')
+      const linkEl = document.getElementById('link')
+      const btnCopy = document.getElementById('btnCopy')
+      const btnDlQr = document.getElementById('btnDlQr')
+      const btnOpen = document.getElementById('btnOpen')
+      const qrCanvas = document.getElementById('qr')
+
+      let selected = null
+      let lastItem = null
+
+      function setStatus(text, kind = '') {
+        statusEl.textContent = text || ''
+        statusEl.className = 'status' + (kind ? ` is-${kind}` : '')
+      }
+
+      function pickFile(file) {
+        selected = file || null
+        btnUpload.disabled = !selected
+        if (selected) setStatus(`已选择：${selected.name}`)
+        else setStatus('')
+      }
+
+      fileInput.addEventListener('change', () => pickFile(fileInput.files?.[0]))
+
+      ;['dragenter', 'dragover'].forEach((ev) => {
+        dropzone.addEventListener(ev, (e) => {
+          e.preventDefault()
+          dropzone.classList.add('is-drag')
+        })
+      })
+      ;['dragleave', 'drop'].forEach((ev) => {
+        dropzone.addEventListener(ev, (e) => {
+          e.preventDefault()
+          dropzone.classList.remove('is-drag')
+        })
+      })
+      dropzone.addEventListener('drop', (e) => {
+        const f = e.dataTransfer?.files?.[0]
+        if (f) {
+          fileInput.files = e.dataTransfer.files
+          pickFile(f)
+        }
+      })
+
+      btnUpload.addEventListener('click', async () => {
+        if (!selected) return
+        btnUpload.disabled = true
+        setStatus('上传中…')
+        result.hidden = true
+        try {
+          const item = await uploadHtmlFile(selected)
+          lastItem = item
+          linkEl.textContent = item.url
+          btnOpen.href = item.url
+          await QRCode.toCanvas(qrCanvas, item.url, {
+            width: 200,
+            margin: 1,
+            color: { dark: '#1f1a17', light: '#ffffff' },
+          })
+          result.hidden = false
+          setStatus('完成', 'ok')
+          pickFile(null)
+          fileInput.value = ''
+        } catch (err) {
+          setStatus(err instanceof Error ? err.message : '上传失败', 'error')
+          btnUpload.disabled = !selected
+        }
+      })
+
+      btnCopy.addEventListener('click', async () => {
+        const url = linkEl.textContent
+        if (!url) return
+        try {
+          await navigator.clipboard.writeText(url)
+          setStatus('链接已复制', 'ok')
+        } catch {
+          setStatus('复制失败，请手动选中链接', 'error')
+        }
+      })
+
+      btnDlQr.addEventListener('click', () => {
+        try {
+          downloadQrFromCanvas(qrCanvas, qrFilename(lastItem || { id: 'page' }))
+          setStatus('二维码已下载', 'ok')
+        } catch (err) {
+          setStatus(err instanceof Error ? err.message : '下载失败', 'error')
+        }
+      })
+    </script>
+  </body>
+</html>

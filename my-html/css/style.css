@@ -1,0 +1,256 @@
+:root {
+  --bg: #f7f3ee;
+  --ink: #1f1a17;
+  --muted: #6b625c;
+  --card: #fffdf9;
+  --line: #e4dcd3;
+  --accent: #c45c48;
+  --accent-ink: #9a3f2e;
+  --ok: #2f6b4f;
+  --radius: 14px;
+  --font: "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: var(--font);
+  color: var(--ink);
+  background:
+    radial-gradient(900px 420px at 10% -10%, rgba(196, 92, 72, 0.12), transparent 55%),
+    radial-gradient(700px 380px at 100% 0%, rgba(80, 120, 160, 0.08), transparent 50%),
+    var(--bg);
+  line-height: 1.6;
+}
+
+a {
+  color: var(--accent-ink);
+}
+
+.wrap {
+  width: min(720px, calc(100% - 2rem));
+  margin: 0 auto;
+  padding: 2.5rem 0 3.5rem;
+}
+
+.nav {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  font-size: 0.95rem;
+}
+
+.nav a {
+  text-decoration: none;
+  color: var(--muted);
+}
+
+.nav a:hover,
+.nav a.is-active {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+h1 {
+  margin: 0 0 0.35rem;
+  font-size: clamp(1.6rem, 4vw, 2rem);
+  letter-spacing: 0.02em;
+}
+
+.lead {
+  margin: 0 0 1.75rem;
+  color: var(--muted);
+}
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 1.25rem 1.35rem;
+  margin-bottom: 1rem;
+}
+
+.drop {
+  border: 1.5px dashed #cbbfb2;
+  border-radius: var(--radius);
+  padding: 1.75rem 1rem;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.55);
+  cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.drop:hover,
+.drop.is-drag {
+  border-color: var(--accent);
+  background: #fff;
+}
+
+.drop strong {
+  display: block;
+  margin-bottom: 0.35rem;
+}
+
+.drop span {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.drop input {
+  display: none;
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+  margin-top: 1rem;
+}
+
+.btn {
+  appearance: none;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  padding: 0.55rem 1.15rem;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  background: var(--accent);
+  color: #fff;
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn--ghost {
+  background: transparent;
+  color: var(--ink);
+  border-color: var(--line);
+}
+
+.btn--danger {
+  background: transparent;
+  color: var(--accent-ink);
+  border-color: #e7c4bb;
+}
+
+.status {
+  min-height: 1.4em;
+  font-size: 0.92rem;
+  color: var(--muted);
+}
+
+.status.is-error {
+  color: var(--accent-ink);
+}
+
+.status.is-ok {
+  color: var(--ok);
+}
+
+.qr-box {
+  display: grid;
+  gap: 1rem;
+  justify-items: start;
+}
+
+.qr-box canvas,
+.qr-box img {
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: #fff;
+  padding: 0.5rem;
+}
+
+.link {
+  word-break: break-all;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.85rem;
+  background: #f3efe9;
+  padding: 0.65rem 0.75rem;
+  border-radius: 8px;
+  width: 100%;
+}
+
+.list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.75rem;
+}
+
+.list li {
+  display: grid;
+  gap: 0.55rem;
+  padding: 1rem 1.1rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--card);
+}
+
+.list__title {
+  font-weight: 600;
+}
+
+.list__meta {
+  color: var(--muted);
+  font-size: 0.88rem;
+}
+
+.list__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.empty {
+  color: var(--muted);
+  padding: 1.5rem 0;
+}
+
+.hint {
+  margin-top: 1.5rem;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(20, 16, 14, 0.45);
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+  z-index: 20;
+}
+
+.modal[hidden] {
+  display: none;
+}
+
+.modal__panel {
+  width: min(360px, 100%);
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 1.25rem;
+  border: 1px solid var(--line);
+}
+
+.modal__panel h2 {
+  margin: 0 0 0.75rem;
+  font-size: 1.1rem;
+}
+
+.modal__panel .qr-host {
+  display: grid;
+  place-items: center;
+  margin: 0.75rem 0 1rem;
+}
